@@ -72,6 +72,7 @@ for c in cities:
 
 # TODO Get latitude and longitude values from the user
 
+
 class Coord:
   def __init__(self, x, y):
     self.x = x
@@ -107,3 +108,17 @@ def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   within = [item for item in cities if square.contains(Coord(item.lat, item.lon))]
 
   return within
+
+
+while True:
+  pt1 = [item.strip() for item in input("Enter lat1, lon1:").split(',')]
+  pt2 = [item.strip() for item in input("Enter lat2, lon2:").split(',')]
+
+  try:
+    result = cityreader_stretch(float(pt1[0]), float(pt1[1]), float(pt2[0]), float(pt2[1]), cities)
+    for item in result:
+      print(f"{item.name}: ({item.lat},{item.lon})")
+  except:
+    print("Incorrect input! Try again")
+
+  print('\n')
