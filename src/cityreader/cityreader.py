@@ -1,6 +1,16 @@
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
+import csv
 
+class City:
+  def __init__(self, name, lat, lon):
+    self.name = name
+    self.lat = lat
+    self.lon = lon
+
+  def __str__(self):
+    # return f"{self.name} {self.lat} {self.lon}"
+    return f"({self.name}, {self.lat}, {self.lon})"
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -20,8 +30,10 @@ def cityreader(cities=[]):
   # TODO Implement the functionality to read from the 'cities.csv' file
   # For each city record, create a new City instance and add it to the 
   # `cities` list
-    
-    return cities
+  with open('cities.csv', newline='') as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=',')
+    cities.extend([City(row[0], float(row[3]), float(row[4])) for row in csvreader if row[0] != 'city'])
+  return cities
 
 cityreader(cities)
 
@@ -60,6 +72,30 @@ for c in cities:
 
 # TODO Get latitude and longitude values from the user
 
+class Coord:
+  def __init__(self, x, y):
+    self.x = x
+    self.y = y
+
+class Square:
+  def __init__(self, a, b):
+    self.A = a
+    self.B = b
+
+  def contains(self, pt):
+    bot = min(self.A.x, self.B.x)
+    top = max(self.A.x, self.B.x)
+    left = min(self.A.y, self.B.y)
+    right = max(self.A.y, self.B.y)
+    
+    # bot = self.A.x if self.A.x > self.B.x else self.B.x
+    # top = self.A.x if self.A.x > self.B.x else self.B.x
+
+    if (pt.x >= bot and pt.x <= top) and (pt.y >= left and pt.y <= right):
+      return True
+    else:
+      return False
+
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
   within = []
@@ -67,5 +103,7 @@ def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # TODO Ensure that the lat and lon valuse are all floats
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
+  square = Square(Coord(lat1, lon1), Coord(lat2, lon2))
+  within = [item for item in cities if square.contains(Coord(item.lat, item.lon))]
 
   return within
